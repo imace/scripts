@@ -61,9 +61,9 @@ for file in `find -maxdepth 1 -type f -exec basename {} \;`; do
 done
 
 for dir in `find -maxdepth 1 -type d -not -name .hg \
-	-not -name . -not -name .. -exec basename {} \; `; do
-	rm ~/${file}
-	ln -sfv $(realpath ${dir}) ~${dir}
+	-not -name . -not -name .. `; do
+	rm ~/${dir}
+	ln -sfv $(realpath ${dir}) ~/${dir}
 done
 
 popd
