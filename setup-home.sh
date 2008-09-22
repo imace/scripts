@@ -56,14 +56,20 @@ for file in `find -maxdepth 1 -type f -exec basename {} \;`; do
 	# We default to a hardlink by normal, 
 	# since it saves a small amount 
 	# of I/O
-	echo rm ~/${file}
-	echo ln -fv ""$(realpath ${file})""  ~/${file} 
+	rm ~/${file}
+	ln -fv ""$(realpath ${file})""  ~/${file} 
 done
 
 for dir in `find -maxdepth 1 -type d -not -name .hg \
 	-not -name . -not -name .. `; do
-	echo rm ~/${dir}
-	echo ln -sfv $(realpath ${dir}) ~/${dir}
+	rm ~/${dir}
+	ln -sfv $(realpath ${dir}) ~/${dir}
 done
 
 popd
+
+pushd ~/.scripts
+
+find -maxdepth 1 -type f -exec chmod -v 755 {} \;
+
+echo "Finsihed creating home environment"
