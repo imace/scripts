@@ -56,14 +56,14 @@ for file in `find -maxdepth 1 -type f -exec basename {} \;`; do
 	# We default to a hardlink by normal, 
 	# since it saves a small amount 
 	# of I/O
-	rm ~/${file}
-	ln -fv $(realpath ${file})  ~/${file} 
+	echo rm ~/${file}
+	echo ln -fv ""$(realpath ${file})""  ~/${file} 
 done
 
 for dir in `find -maxdepth 1 -type d -not -name .hg \
 	-not -name . -not -name .. `; do
-	rm ~/${dir}
-	ln -sfv $(realpath ${dir}) ~/${dir}
+	echo rm ~/${dir}
+	echo ln -sfv $(realpath ${dir}) ~/${dir}
 done
 
 popd
