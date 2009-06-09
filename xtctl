@@ -1,0 +1,133 @@
+#!/usr/local/bash
+# Control an xterm window
+
+name=`basename $0`
+
+bq='`'
+eq="'"
+
+usage () 
+{
+    case $1 in
+    short) echo "usage: $name [--help] [<command> <args> [<command> <args> ...]]" ;;
+    long)  echo "xtctl v0.1415927 - slumos@cs.unlv.edu"
+           echo "usage: $name [--help] [<command> <args> [<command> <args> ...]]"
+           echo "    command   args"
+           echo "    title     <window title>"
+	   echo "    n         <icon name>"
+	   echo "    name      <window title/icon name>"
+           echo "    fg        <foreground color>"
+	   echo "    bg        <background color>"
+           echo "    cr        <cursor color>"
+           echo "    hc        <highlight background color>"
+	   echo "    mfg       <mouse foreground color>"
+	   echo "    mbg       <mouse background color>"
+	   echo "    fn        <font name>"
+	   echo "    size      <width> <height>"
+	   echo "    move      <x> <y>"
+	   echo "    raise"
+	   echo "    lower"
+	   echo "    iconify"
+	   echo "    restore"
+	   echo "    fullr"
+	   echo "    softr"
+           echo " these are only known to work with Eterm:"
+	   echo "    icon      <path to icon file>"
+           echo "    pix       <background image>"
+	   ;;
+    esac
+    exit 0
+}	 
+
+err ()
+{
+    echo "$name: $1"
+    exit 1
+}
+
+E=""
+B=""
+
+if [ $# -lt 1 ]; then
+    usage short
+fi
+
+while [ ! -z "$1" ]; do 
+    case $1 in
+    --help)  usage long ;;
+    fullr)  echo -n "$Ec"; shift ;;
+    softr)  echo -n "$E[!p"; shift ;;
+    raise)   echo -n "$E[5t"; shift ;;
+    lower)   echo -n "$E[6t"; shift ;;
+    iconify) echo -n "$E[2t"; shift ;;
+    restore) echo -n "$E[1t"; shift ;;
+    name)  echo -n "$E]0;$2$B";  shift; shift ;;
+    n)     echo -n "$E]1;$2$B";  shift; shift ;;
+    title) echo -n "$E]2;$2$B";  shift; shift ;;
+    fn)    echo -n "$E]50;$2$B"; shift; shift ;;
+    fg)    echo -n "$E]10;$2$B"; shift; shift ;;
+    bg)    echo -n "$E]11;$2$B"; shift; shift ;;
+    cr)    echo -n "$E]12;$2$B"; shift; shift ;;
+    mfg)   echo -n "$E]13;$2$B"; shift; shift ;;
+    mbg)   echo -n "$E]14;$2$B"; shift; shift ;;
+    hc)    echo -n "$E]17;$2$B"; shift; shift ;;
+    pix)   echo -n "$E]20;$2$B"; shift; shift ;; 
+    size)  echo -n "$E[8;$3;$2t"; shift; shift; shift ;;
+    move)  echo -n "$E[3;$2;$3t"; shift; shift; shift ;;
+    get) # Here's a demo of how this can be done.  Purposely undocumented.
+	case $2 in
+	position)
+	    otty=`stty -g`
+	    stty raw -echo min 0 time 1
+	    echo -n "$E[13t"
+	    IFS=";t" read j x y j
+	    stty $otty
+	    echo "$x $y"
+	    shift; shift
+	    ;;
+	csize)
+	    otty=`stty -g`
+	    stty raw -echo min 0 time 1
+            echo -n "$E[18t"
+            IFS="t;" read j h w j
+	    stty $otty
+	    echo "$w $h"
+	    shift; shift
+	    ;;
+       psize)
+	    otty=`stty -g`
+	    stty raw -echo min 0 time 1
+	    echo -n "$E[19t"
+	    IFS="t;" read j h w j
+	    stty $otty
+	    echo "$w $h"
+	    shift; shift
+	    ;;
+       title) # This one doesn't work for some reason.
+	    otty=`stty -g`
+	    stty raw -echo min 0 time 1
+	    echo -n "$E[21t"
+	    IFS='' read n
+	    stty $otty
+	    echo "$n"
+	    shift; shift
+	    ;;
+       state)
+            otty=`stty -g`
+	    stty raw -echo min 0 time 1
+	    echo -n "$E[11t"
+	    IFS='' read s
+	    stty $otty
+	    case $s in
+	    *1t) echo "open" ;;
+	    *2t) echo "iconified" ;;
+	    *) err "Unknown response for get state: $s"
+	    esac
+	    shift; shift;
+	    ;;
+       *) err "Unknown get attribute: $bq$2$eq"
+       esac
+       ;;
+    *) err "Unknown command: $bq$1$eq"
+    esac
+done

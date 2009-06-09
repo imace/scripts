@@ -35,7 +35,7 @@ echo "--------------------------------------------------------------------------
 echo "Creating links for rc / config files"
 echo "--------------------------------------------------------------------------------"
 
-for file in `find -maxdepth 1 -type f -exec basename {} \;`; do
+for file in `gfind -maxdepth 1 -type f -exec basename {} \;`; do
 	# We default to a hardlink by normal, 
 	# since it saves a small amount 
 	# of I/O
@@ -47,7 +47,7 @@ echo "--------------------------------------------------------------------------
 echo "Creating symlinks for dirs"
 echo "--------------------------------------------------------------------------------"
 
-for dir in `find -maxdepth 1 -type d -not -name .hg \
+for dir in `gfind -maxdepth 1 -type d -not -name .hg \
 	-not -name . -not -name .. `; do
 
 	rm ~/${dir}
@@ -126,7 +126,7 @@ done
 
 cd ~/.scripts 1> /dev/null
 
-find -maxdepth 1 -type f -exec chmod -v 755 {} \;
+gfind -maxdepth 1 -type f -exec chmod -v 755 {} \;
 
 echo "Finished creating home environment"
 # vim: set foldmethod=marker foldlevel=1 :
