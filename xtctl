@@ -1,4 +1,4 @@
-#!/usr/local/bash
+#!/bin/bash
 # Control an xterm window
 
 name=`basename $0`
