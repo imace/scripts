@@ -1,0 +1,20 @@
+#!/bin/bash
+
+LOCAL=$1
+REMOTE=$2
+MERGED=$3
+BASE=$4
+
+#if [ -e "$BASE" ]; then
+#    cat $LOCAL > $MERGED
+#else 
+#    cat $LOCAL > $MERGED
+#fi
+
+cat $LOCAL > $MERGED
+
+# Fire up the history 
+gitk --all -- $MERGED 2>&1 > /dev/null &
+
+# Fire up the merge
+meld $REMOTE $MERGED
