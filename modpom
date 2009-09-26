@@ -1,0 +1,60 @@
+#!/bin/bash
+
+which xmlstarlet > /dev/null
+if [ $? -gt 0 ]; then
+    echo "xmlstarlet must be installed to use modpomversion."
+    echo "On a mac, install using sudo port install xmlstarlet"
+    echo "If you don't have macports, visit http://www.macports.org"
+    exit 1;
+fi
+
+printusage() {
+    echo "modpomversion"
+    echo "  -f Name of the pom file to modify"
+    echo "  -v new version number"
+    echo
+    exit 1
+}
+
+filename=""
+version=""
+location="/x:project/x:version"
+
+while getopts "f:v:" value; do
+    case "$value" in 
+      f) filename="$OPTARG";;
+      v) version="$OPTARG";;
+      [?]) printusage;;
+    esac
+done
+
+oldversion=`xmlstarlet sel -N x=http://maven.apache.org/POM/4.0.0 -t -v "/x:project/x:version" $filename`
+if [ "$oldversion" = "" ]; then
+  #Check to make sure the root pom isn't reliant on the common project -- we don't want to change that
+  parentGroup=`xmlstarlet sel -N x=http://maven.apache.org/POM/4.0.0 -t -v "/x:project/x:parent/x:groupId" $filename`
+  parentArtifactId=`xmlstarlet sel -N x=http://maven.apache.org/POM/4.0.0 -t -v "/x:project/x:parent/x:artifactId" $filename`
+  
+  if [ "$parentGroup" == "com.shopzilla.com" -a "$parentArtifactId" == "root" ]; then
+      echo "$filename: No version number found"
+      exit 1
+  else 
+      location="/x:project/x:parent/x:version"
+      oldversion=`xmlstarlet sel -N x=http://maven.apache.org/POM/4.0.0 -t -v "$location" $filename`
+      if [ "$oldversion" = "" ]; then
+        echo "$filename: No version number found"
+        exit 1
+      fi
+  fi
+  
+fi
+
+echo "$filename: $oldversion -> $version"
+mv $filename $filename.bak
+xmlstarlet ed -P -N x=http://maven.apache.org/POM/4.0.0 -u "$location" -v "$version" $filename.bak > $filename
+
+if [ $? -eq 0 ]; then
+  rm $2.bak
+else
+  echo "xmlstarlet error"
+  exit 1
+fi
