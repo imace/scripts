@@ -1,0 +1,102 @@
+include "extended-styles"
+
+style quotes { bold black }
+
+/^.*DEBUG.*$/ { cyan }
+/^.*debug.*$/ { cyan }
+
+/^.*JamonMonitorAspect.*/ { gray40 }
+/^.*PerformanceAspect.*/ { gray40 }
+/^.*TouchpointHelperImpl.*/ { gray40 }
+/^.*RequestAccessListener.*/ { grey40 }
+
+/^.*INFO.*$/ { green }
+/^.*info.*$/ { green }
+
+/^.*WARN.*$/ { yellow }
+/^.*warn.*$/ { yellow }
+
+/^.*ERROR.*$/ { red }
+/^.*error.*$/ { red }
+
+# Debug line that sun JVM's spit out
+/^Listening\ for\ transport\ (dt_[a-z]+)\ at\ address\:\ ([0-9]+)/ { 1,2 magenta }
+
+# Jetty produces this as a log message
+/::INFO:.*Started\ .*@(.*)/ { 1 green 2 magenta }
+
+# Make Spring errors easier to pick apart
+/^.*org.springframework.beans.factory.BeanCreationException.*$/ {
+    indianred
+
+    # Match the things in [] which are normally files
+    /\[([^]]+)\]/g { 1 lawngreen }
+
+    # Match the things in '' which are normally bean names
+    /'([^']+)'/g { 1 steelblue }
+}
+
+/^.*org.springframework.beans.factory.BeanInitializationException.*$/ {
+    indianred
+
+    # Match the things in [] which are normally files
+    /\[([^]]+)\]/g { 1 lawngreen }
+
+    # Match the things in '' which are normally bean names
+    /'([^']+)'/g { 1 steelblue }
+
+    # Match the last name as its the one that needs to be searched for in spring config files
+    /'([^']+)'$/ { 1 green }
+}
+
+/^.*Started SelectChannelConnector.*/ {
+    /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/ { tan1 }
+    /:(.*)$/ { 1 indianred }
+}
+
+/^.*org.springframework.beans.factory.CannotLoadBeanClassException.*$/ {
+    indianred
+
+    # Match the things in [] which are normally files
+    /\[([^]]+)\]/g { 1 lawngreen }
+
+    # Match the things in '' which are normally bean names
+    /'([^']+)'/g { 1 steelblue }
+
+}
+
+/^.*JptViewResolver.java.*/ {
+    steelblue bold
+    /Loading\ template\ for\ view\ (.*)$/ { 1 lawngreen }
+}
+
+/^.*BaseCommandController.*/ {
+    steelblue 
+    /\[([^]]+)\]$/ { 1 lawngreen }
+}
+
+/^.*SiteExperienceFilter.*/ {
+    steelblue
+    /Mapped\ to\ experience\ (.*)$/ { 1 blink indianred }
+}
+
+#2009-09-17 15:21:25,370 [e9ec0d5f-1fd9-46cd-b60b-3e04430ef57e] DEBUG [ExperienceMapper.java:46] Found ruleset for canonical uri: buy/browse
+#2009-09-17 15:21:25,371 [e9ec0d5f-1fd9-46cd-b60b-3e04430ef57e] DEBUG [SiteExperienceFilter.java:219] Mapped to experience HOT
+
+/^.*Oracle\ Coherence.*/ {
+    orangered
+}
+
+#2009-09-17 14:57:31.709/49.329 Oracle Coherence 3.4.1/407 <Info> (thread=main, member=n/a): Loaded operational configuration from resource "jar:file:/Users/750062/.dotfiles/.m2/repository/com/tangosol/coherence/3.4.1/coherence-3.4.1.jar!/tangosol-coherence.xml"
+#2009-09-17 14:57:31.715/49.334 Oracle Coherence 3.4.1/407 <Info> (thread=main, member=n/a): Loaded operational overrides from resource "jar:file:/Users/750062/.dotfiles/.m2/repository/com/tangosol/coherence/3.4.1/coherence-3.4.1.jar!/tangosol-coherence-override-dev.xml"
+#2009-09-17 14:57:31.716/49.335 Oracle Coherence 3.4.1/407 <D5> (thread=main, member=n/a): Optional configuration override "/tangosol-coherence-override.xml" is not specified
+#2009-09-17 14:57:31.719/49.338 Oracle Coherence 3.4.1/407 <D5> (thread=main, member=n/a): Optional configuration override "/custom-mbeans.xml" is not specified
+#
+#Oracle Coherence Version 3.4.1/407
+# Grid Edition: Development mode
+#Copyright (c) 2000-2008 Oracle. All rights reserved.
+#
+#2009-09-17 14:57:32.512/50.131 Oracle Coherence GE 3.4.1/407 <Info> (thread=main, member=n/a): Loaded cache configuration from resource "file:/Users/750062/work/site/bizrate.com/webapp/target/classes/c14n-local-cache-config.xml"
+
+/java.lang.ClassNotFoundException: (.*)$/ { tan1 1 aliceblue }
+/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/ { tan1 }
