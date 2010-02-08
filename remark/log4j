@@ -4,6 +4,7 @@ style quotes { bold black }
 
 /^.*DEBUG.*$/ { cyan }
 /^.*debug.*$/ { cyan }
+/^.*Debug.*$/ { cyan }
 
 /^.*JamonMonitorAspect.*/ { gray40 }
 /^.*PerformanceAspect.*/ { gray40 }
@@ -12,12 +13,15 @@ style quotes { bold black }
 
 /^.*INFO.*$/ { green }
 /^.*info.*$/ { green }
+/^.*Info.*$/ { green }
 
 /^.*WARN.*$/ { yellow }
 /^.*warn.*$/ { yellow }
+/^.*Warn.*$/ { yellow }
 
 /^.*ERROR.*$/ { red }
 /^.*error.*$/ { red }
+/^.*Error.*$/ { red }
 
 # Debug line that sun JVM's spit out
 /^Listening\ for\ transport\ (dt_[a-z]+)\ at\ address\:\ ([0-9]+)/ { 1,2 magenta }
@@ -47,6 +51,14 @@ style quotes { bold black }
 
     # Match the last name as its the one that needs to be searched for in spring config files
     /'([^']+)'$/ { 1 green }
+}
+
+
+/^.*Loading XML bean definitions from.*$/ {
+    steelblue
+
+    # Match the things in [] which are normally files
+    /.*resource \[([^]]+)\]/ { 1 lawngreen }
 }
 
 /^.*Started SelectChannelConnector.*/ {
@@ -85,6 +97,20 @@ style quotes { bold black }
 
 /^.*Oracle\ Coherence.*/ {
     orangered
+
+    /.*<Info>.*/ { 
+        lawngreen
+    }
+
+    /.*<D5>.*/ { 
+        grey40
+    }
+
+    /Load.* overrides.*|config.* "(.*):(.*):([^"]+)"/g { 
+        1 steelblue 
+        2 steelblue 
+        3 indianred 
+    }
 }
 
 #2009-09-17 14:57:31.709/49.329 Oracle Coherence 3.4.1/407 <Info> (thread=main, member=n/a): Loaded operational configuration from resource "jar:file:/Users/750062/.dotfiles/.m2/repository/com/tangosol/coherence/3.4.1/coherence-3.4.1.jar!/tangosol-coherence.xml"
