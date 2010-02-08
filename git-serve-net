@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Hacky script to fast serve a bananajour
+IPADDR=$(ifconfig | awk '/eth2/ { getline; split($2, toks, ":"); print toks[2] } ')
+
+echo "Serving a hacky bananajour from ${IPADDR}"
+git config --global bananajour.hostname ${IPADDR}
+bananajour
+
+git config --global --unset bananajour.hostname 
