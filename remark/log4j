@@ -106,10 +106,26 @@ style quotes { bold black }
         grey40
     }
 
-    /Load.* overrides.*|config.* "(.*):(.*):([^"]+)"/g { 
+    /Load.* override.*|config.* "(.*):(.*):([^"]+)"/ {
         1 steelblue 
         2 steelblue 
         3 indianred 
+    }
+
+    /Load.* config.* "(.*):(.*):([^"]+)"/ {
+        1 steelblue
+        2 steelblue
+        3 indianred
+    }
+
+    /Load.* config.* "(.*):([^"]+)"/ {
+        1 steelblue
+        2 indianred
+    }
+
+    /Load.* override.* "(.*):([^"]+)"/ {
+        1 steelblue
+        2 indianred
     }
 }
 
